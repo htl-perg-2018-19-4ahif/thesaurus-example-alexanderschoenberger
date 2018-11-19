@@ -23,27 +23,28 @@ function read(arg: string) {
     });
     lineReader.on('line', function (line) {
         getSynonym(line, arg);
+    }).on('close', () => {
+        if (!found) {
+            console.log(`No matches found for '${arg}' `);
+        }
+        found = false;
     });
-    if (!found) {
-        console.log(`No matches found for '${arg}' `);
-    }
-    found = false;
 }
 
-function getSynonym(line: string, arg: string) {
-    if (line[0] != '#' && line.toLowerCase().match(arg.toLowerCase())) {
+function getSynonym(line, arg) {
+    if (line[0] != '#' && line.includes(arg)) {
         found = true;
         let lineArr: string[] = line.split(';');
         for (let i: number = 0; i < lineArr.length; i++) {
             let k: number = 0;
-            if (lineArr[i].toLowerCase().indexOf(arg.toLowerCase()) != -1) {
+            if (lineArr[i].indexOf(arg) != -1) {
                 console.log(`${arg}:`);
             } else {
                 console.log(`${lineArr[i]}:`);
                 k++;
             }
             for (; k < lineArr.length; k++) {
-                if (lineArr[k].toLowerCase() != arg.toLowerCase()) {
+                if (lineArr[k] != arg) {
                     console.log(`\t${lineArr[k]}`);
                 }
             }

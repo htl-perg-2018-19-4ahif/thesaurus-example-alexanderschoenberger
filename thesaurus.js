@@ -25,19 +25,20 @@ function read(arg) {
     });
     lineReader.on('line', function (line) {
         getSynonym(line, arg);
+    }).on('close', function () {
+        if (!found) {
+            console.log("No matches found for '" + arg + "' ");
+        }
+        found = false;
     });
-    if (!found) {
-        console.log("No matches found for '" + arg + "' ");
-    }
-    found = false;
 }
 function getSynonym(line, arg) {
-    if (line[0] != '#' && line.toLowerCase().match(arg.toLowerCase())) {
+    if (line[0] != '#' && line.includes(arg)) {
         found = true;
         var lineArr = line.split(';');
         for (var i = 0; i < lineArr.length; i++) {
             var k = 0;
-            if (lineArr[i].toLowerCase().indexOf(arg.toLowerCase()) != -1) {
+            if (lineArr[i].indexOf(arg) != -1) {
                 console.log(arg + ":");
             }
             else {
@@ -45,7 +46,7 @@ function getSynonym(line, arg) {
                 k++;
             }
             for (; k < lineArr.length; k++) {
-                if (lineArr[k].toLowerCase() != arg.toLowerCase()) {
+                if (lineArr[k] != arg) {
                     console.log("\t" + lineArr[k]);
                 }
             }
